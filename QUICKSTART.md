@@ -59,35 +59,6 @@ bitbake llama-cpp
 journalctl -u llama-cpp-server -f
 ```
 
-## Troubleshooting
-
-**Build fails with CMake errors:**
-```bash
-# Check dependencies
-bitbake -c cleanall llama-cpp
-bitbake llama-cpp -c fetch -c unpack -c configure
-```
-
-**Server won't start:**
-```bash
-# Check service status
-systemctl status llama-cpp-server
-
-# Check model permissions
-ls -la /var/lib/ollama/models
-chown -R ollama:ollama /var/lib/ollama
-```
-
-**Out of memory:**
-```bash
-# Reduce context size in wrapper
---ctx-size 1024  # instead of 2048
-
-# Limit systemd service memory
-# Edit llama-cpp-server.service
-MemoryLimit=2G
-```
-
 ## Next Steps
 
 - Read [INTEGRATION.md](INTEGRATION.md) for detailed integration

@@ -31,9 +31,6 @@ Add to `yocto-playground/build.conf` if needed:
 ```bash
 # Add llama-cpp to your image
 IMAGE_INSTALL:append = " llama-cpp llama-cpp-server"
-
-# Increase rootfs space for AI models (10GB)
-IMAGE_ROOTFS_EXTRA_SPACE = "10485760"
 ```
 
 ### 4. Build the Image
@@ -85,35 +82,6 @@ meta-llama-cpp/
 │           ├── llama-cpp-wrapper.sh
 │           └── config.json
 └── README.md
-```
-
-## Key Differences from meta-ollama
-
-1. **Lighter Weight**: Uses llama.cpp instead of full Ollama (Go binary)
-2. **Better for Embedded**: Optimized for resource-constrained devices
-3. **Ollama Compatibility**: Provides Ollama-compatible API endpoint
-4. **No Go Runtime**: Eliminates Go runtime dependency
-5. **Direct C++ Implementation**: Better performance on ARM/embedded CPUs
-
-## Configuration Options
-
-### In local.conf or image recipe:
-
-```bash
-# Architecture optimizations
-# ARM64 with NEON (automatic)
-# x86-64 with AVX2 (automatic)
-
-# Resource limits
-# Adjust in systemd service file:
-MemoryLimit=4G
-CPUQuota=200%
-
-# Model storage
-OLLAMA_MODELS = "/var/lib/ollama/models"
-
-# Server binding
-OLLAMA_HOST = "0.0.0.0:11434"
 ```
 
 ## Runtime Usage
@@ -168,33 +136,6 @@ wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7
 
 # Restart server to detect new model
 systemctl restart llama-cpp-server
-```
-
-## Troubleshooting
-
-### Build Issues
-
-```bash
-# Clean rebuild
-bitbake -c cleansstate llama-cpp
-bitbake llama-cpp
-
-# Check dependencies
-bitbake-layers show-recipes llama-cpp
-```
-
-### Runtime Issues
-
-```bash
-# Check server logs
-journalctl -u llama-cpp-server -n 100
-
-# Test llama.cpp directly
-llama-cli -m /var/lib/ollama/models/model.gguf -p "test prompt"
-
-# Check permissions
-ls -la /var/lib/ollama/models
-chown -R ollama:ollama /var/lib/ollama
 ```
 
 ## License
