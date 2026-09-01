@@ -5,6 +5,9 @@ HOMEPAGE = "https://github.com/ggml-org/llama.cpp"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=223b26b3c1143120c87e2b13111d3e99"
 
+# NVD tracks llama.cpp advisories under the "llama.cpp" product name.
+CVE_PRODUCT = "llama.cpp"
+
 DEPENDS = "curl"
 
 SRC_URI = "git://github.com/ggml-org/llama.cpp.git;protocol=https;branch=master \
