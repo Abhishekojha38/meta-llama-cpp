@@ -18,6 +18,8 @@ such as `yocto-playground`; it is not built on its own.
 | `recipes-llm/llama-cpp/llama-cpp_git.bb` | The only recipe. Builds `llama-cpp` and its extra package `llama-cpp-server`. |
 | `recipes-llm/llama-cpp/files/` | Recipe `SRC_URI` files: the impl-lib versioning patch and `llama-cpp-server.service`. |
 | `scripts/test-layer.sh` | Layer validation: run from a Yocto build dir after `oe-init-build-env`. |
+| `scripts/lint.sh` + `.oelint.cfg` | Static lint of the BitBake metadata with `oelint-adv`. |
+| `.github/workflows/lint.yml` | CI: runs `scripts/lint.sh` on every push to `main` and every PR. |
 | `*.md` | User-facing docs (README, QUICKSTART, INTEGRATION, COMPARISON, API guide). |
 
 There is a single recipe. `llama-cpp-server` is a package split out of it via
@@ -42,8 +44,20 @@ existed previously and was deliberately removed — do not recreate it. The
 
 ## Validating changes
 
-There is no build CI in this repo. Meaningful validation requires a Yocto build
-environment, which is not available here:
+**Lint** runs anywhere and is enforced in CI — run it after any metadata change:
+
+```bash
+pip install oelint-adv
+./scripts/lint.sh          # lints every .bb / .bbappend / .bbclass / .inc / conf/*.conf
+```
+
+`oelint-adv` exits non-zero on any finding. Tune it in `.oelint.cfg` at the repo
+root (release target, rule suppressions), or silence one line with a
+`# nooelint: <rule-id>` inline comment. Prefer fixing the recipe over adding a
+suppression; when you do suppress, record why in `.oelint.cfg`.
+
+**Build validation** requires a Yocto build environment, which is not available
+here:
 
 ```bash
 # from a Yocto build directory, after: source oe-init-build-env
