@@ -5,6 +5,8 @@ HOMEPAGE = "https://github.com/ggml-org/llama.cpp"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=223b26b3c1143120c87e2b13111d3e99"
 
+DEPENDS = "curl"
+
 SRC_URI = "git://github.com/ggml-org/llama.cpp.git;protocol=https;branch=master \
     file://0001-fix-impl-lib-versioning.patch \
     file://llama-cpp-server.service \
@@ -12,8 +14,6 @@ SRC_URI = "git://github.com/ggml-org/llama.cpp.git;protocol=https;branch=master 
 SRCREV = "0324696b8e5fe340dc94b64714e4c9aab03084a2"
 
 S = "${WORKDIR}/git"
-
-DEPENDS = "curl"
 
 inherit cmake pkgconfig systemd
 
@@ -46,20 +46,15 @@ do_install:append() {
     install -m 0644 ${UNPACKDIR}/llama-cpp-server.service ${D}${systemd_unitdir}/system/
 }
 
-FILES:${PN} += " \
+FILES:${PN} += "\
     ${bindir}/* \
     ${datadir}/edgeai/models \
 "
 
-FILES:${PN}-dev += " \
-    ${includedir} \
-    ${libdir}/pkgconfig \
-    ${libdir}/cmake \
-"
+# ${includedir}, ${libdir}/pkgconfig and ${libdir}/cmake are already part of the
+# default FILES:${PN}-dev, so no override is needed for the -dev package.
 
-FILES:${PN}-server = " \
-    ${systemd_unitdir}/system/llama-cpp-server.service \
-"
+FILES:${PN}-server = "${systemd_unitdir}/system/llama-cpp-server.service"
 
 RDEPENDS:${PN}-server += "${PN}"
 INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
