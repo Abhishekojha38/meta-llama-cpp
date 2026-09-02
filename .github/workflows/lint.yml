@@ -1,0 +1,23 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  oelint-adv:
+    name: oelint-adv
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install oelint-adv
+        run: pip install "oelint-adv==9.11.1"
+
+      - name: Lint BitBake metadata
+        run: ./scripts/lint.sh
